@@ -7,12 +7,32 @@
     <body>
         <h1>Student Details:</h1>
         <div>
-            <p>ID:</p>
-            <p th:text="${student.getId()}">Value</p> <br>
-            <p>Name:</p>
-            <p th:text="${student.getName()}">Value</p> <br>
-            <p>Surname:</p>
-            <p th:text="${student.getSureName()}">Value</p>
+    
+            <p>ID: </p>
+            <span th:text="${student.getId()}">Value</span> 
+            <p>Name: </p>
+            <span th:text="${student.getName()}">Value</span> 
+            <p>Surname: </p>
+            <span th:text="${student.getSureName()}">Value</span>
+            <p>Father's Name: </p>
+            <span th:text="${student.getFatherName()}">Value</span>
+            <p>First Colok Mark: </p>
+            <span th:text="${student.getFirstColokMark()}">Value</span>
+            <p>Second Colok Mark: </p>
+            <span th:text="${student.getSecondColokMark()}">Value</span>
+            <p>Third Colok Mark: </p>
+            <span th:text="${student.getThirdColokMark()}">Value</span>
+            <p>First Seminar Mark: </p>
+            <span th:text="${student.getFirstSeminarMark()}">Value</span>
+            <p>Second Seminar Mark: </p>
+            <span th:text="${student.getSecondSeminarMark()}">Value</span>
+            <p>Third Seminar Mark: </p>
+            <span th:text="${student.getThirdSeminarMark()}">Value</span>
+            <p>Total Seminars Mark: </p>
+            <span th:text="${student.getTotalSeminarsMark()}">Value</span>
+    
+
+<hr>
             <a th:href="@{/students/{id}/edit(id=${student.getId()})}">Edit</a>
         </div>
 

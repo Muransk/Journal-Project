@@ -12,6 +12,9 @@
 
     <input type="text" th:field="*{sureName}" placeholder="sureName"/>  
     <div th:if="${#fields.hasErrors('sureName')}" th:errors="*{sureName}">Surname error</div>
+
+    <input type="text" th:field="*{fatherName}" placeholder="fatherName"/>  
+    <div th:if="${#fields.hasErrors('fatherName')}" th:errors="*{fatherName}">Father's Name error</div>
     <br>
     <input type="submit" value="Create"/>
 </form>

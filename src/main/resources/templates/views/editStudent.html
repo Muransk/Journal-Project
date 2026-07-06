@@ -8,8 +8,17 @@
         <h1>Edit Student:</h1>
         <form th:method="PATCH" th:action="@{/students/{id}(id=${student.getId()})}" th:object="${student}">
             <input type="text" th:field="*{name}" placeholder="Name"/>
-            <input type="text" th:field="*{surname}" placeholder="Surname"/>s
+            <input type="text" th:field="*{sureName}" placeholder="Surname"/>
+            <input type="text" th:field="*{fatherName}" placeholder="Father's Name"/>
+            <input type="number" th:field="*{firstColokMark}" placeholder="First Colok Mark"/>
+            <input type="number" th:field="*{secondColokMark}" placeholder="Second Colok Mark"/>
+            <input type="number" th:field="*{thirdColokMark}" placeholder="Third Colok Mark"/>
+            <input type="number" th:field="*{firstSeminarMark}" placeholder="First Seminar Mark"/>
+            <input type="number" th:field="*{secondSeminarMark}" placeholder="Second Seminar Mark"/>
+            <input type="number" th:field="*{thirdSeminarMark}" placeholder="Third Seminar Mark"/>
             <br>
+            <p>Total Seminars Mark: </p>
+            <span th:text="${student.getTotalSeminarsMark()}">Value</span>
             <input type="submit" value="Update"/>
         </form>
     </body>

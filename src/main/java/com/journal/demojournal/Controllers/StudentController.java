@@ -5,7 +5,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -71,12 +70,12 @@ public String edit(@PathVariable("id") int id, Model model)
     
 }
 
-@PatchMapping("/{id}")
+@PostMapping("/{id}")//раньше было PatchMapping, но не работает, поэтому сделал Пост
 public String update(@ModelAttribute("student") @Valid Student student, BindingResult bindingResult, @PathVariable("id") int id)
 {
      if (bindingResult.hasErrors())
     {
-        return "views/editStudent";
+        return "editStudent";
     }
    studentService.update(id, student);
    return "redirect:/students";

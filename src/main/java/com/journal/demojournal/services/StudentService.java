@@ -29,6 +29,9 @@ public class StudentService {
         return foundStudent.orElse(null);
     }
     
+
+   
+    
     @Transactional
     public void save(Student student){
         studentRepository.save(student);
@@ -37,6 +40,7 @@ public class StudentService {
     @Transactional
     public void update(int id, Student updatedStudent){
         updatedStudent.setId(id);
+        updatedStudent.setTotalSeminarsMark();//добавлено чтобы пересчитывало общую оценку
         studentRepository.save(updatedStudent);
     }
 

@@ -1,4 +1,4 @@
-package com.journal.demojournal.config;
+/*package com.journal.demojournal.config;
 
 import java.util.Properties;
 
@@ -145,6 +145,6 @@ public class SpringConfig implements WebMvcConfigurer
         transactionManager.setEntityManagerFactory(entityManagerFactory().getObject());
         return transactionManager;
     }
-}   
+}   */
 
      

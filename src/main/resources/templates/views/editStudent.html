@@ -6,7 +6,8 @@
     </head>
     <body>
         <h1>Edit Student:</h1>
-        <form th:method="PATCH" th:action="@{/students/{id}(id=${student.getId()})}" th:object="${student}">
+        <!--Раньше тут было метод = PATCH, но не работало, так что заменил на пост-->
+        <form th:method="POST" th:action="@{/students/{id}(id=${student.getId()})}" th:object="${student}">
             <input type="text" th:field="*{name}" placeholder="Name"/>
             <input type="text" th:field="*{sureName}" placeholder="Surname"/>
             <input type="text" th:field="*{fatherName}" placeholder="Father's Name"/>

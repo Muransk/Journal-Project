@@ -32,14 +32,14 @@ public class StudentController
     public String studentsIndex(Model model) 
     {
 model.addAttribute("students", studentService.findAll());
-        return "studentsIndex"; //как StudentIndex только вьюс
+        return "views/studentsIndex"; //как StudentIndex только вьюс
     }
 
     @GetMapping("/{id}")
     public String showStudent(@PathVariable("id") int id,Model model)
 {
     model.addAttribute("student", studentService.findOne(id));
-    return "studentDetails"; //StudentDetails = show
+    return "views/studentDetails"; //StudentDetails = show
 }
  
 
@@ -47,14 +47,14 @@ model.addAttribute("students", studentService.findAll());
 public String addStudent(@ModelAttribute("student") Student student)
 {
 
-    return "/new";
+    return "views/new";
 }
 
 
 @PostMapping()// для создания студента пост запрос
 public String create(@ModelAttribute("student") @Valid Student student, BindingResult bindingResult  )
 { if (bindingResult.hasErrors()) {
-    return "new";
+    return "views/new";
 }
 studentService.save(student);
 
@@ -65,7 +65,7 @@ return "redirect:/students";
 public String edit(@PathVariable("id") int id, Model model)
 {
     model.addAttribute("student", studentService.findOne(id));
-    return "editStudent";
+    return "views/editStudent";
     
     
 }
@@ -75,7 +75,7 @@ public String update(@ModelAttribute("student") @Valid Student student, BindingR
 {
      if (bindingResult.hasErrors())
     {
-        return "editStudent";
+        return "views/editStudent";
     }
    studentService.update(id, student);
    return "redirect:/students";

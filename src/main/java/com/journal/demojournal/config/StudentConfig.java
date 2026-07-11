@@ -1,4 +1,4 @@
-package com.journal.demojournal.config;
+/*package com.journal.demojournal.config;
 import org.springframework.web.filter.HiddenHttpMethodFilter;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
@@ -34,4 +34,4 @@ public class StudentConfig extends AbstractAnnotationConfigDispatcherServletInit
         aContext.addFilter("hiddenHttpMethodFilter",
                 new HiddenHttpMethodFilter()).addMappingForUrlPatterns(null, true, "/*");
     }
-}
+}*/

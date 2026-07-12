@@ -1,5 +1,8 @@
 package com.journal.demojournal.Models;
 
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -11,6 +14,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 
 @Entity
+@DynamicInsert
 @Table(name = "student")
 public class Student 
 {   @Id
@@ -36,27 +40,33 @@ public class Student
     private String fatherName;
 
     @Column(name = "firstcolokmark")
-    private int firstColokMark = 0;
+    @ColumnDefault("0")
+    private Integer firstColokMark = 0;
 
 
 
     @Column(name = "secondcolokmark")
-    private int secondColokMark = 0;
+    @ColumnDefault("0")
+    private Integer secondColokMark = 0;
 
     @Column(name = "thirdcolokmark")
-    private int thirdColokMark = 0;
+    @ColumnDefault("0")
+    private Integer thirdColokMark = 0;
 
     @Column(name = "firstseminarmark")
-    private int firstSeminarMark = 0;
+    @ColumnDefault("0")
+    private Integer firstSeminarMark = 0;
     
     @Column(name = "secondseminarmark")
-    private int secondSeminarMark = 0;
+    @ColumnDefault("0")
+    private Integer secondSeminarMark = 0;
 
     @Column(name = "thirdseminarmark")
-    private int thirdSeminarMark = 0;
+    @ColumnDefault("0")
+    private Integer thirdSeminarMark = 0;
 
     @Column(name = "totalseminarsmark")
-    private int totalSeminarsMark = 0;
+    private Integer totalSeminarsMark = 0;
 
    // @Column(name = "attendance")
     //private int attendance = 10;
@@ -64,7 +74,7 @@ public class Student
 
 public Student() {
 }
-public  Student(String name, Integer id, String sureName, String fatherName, int firstColokMark, int secondColokMark, int thirdColokMark,int firstSeminarMark, int secondSeminarMark, int thirdSeminarMark, int totalSeminarsMark /*int attendance*/ ) {
+public  Student(String name, Integer id, String sureName, String fatherName, Integer firstColokMark, Integer secondColokMark, Integer thirdColokMark,Integer firstSeminarMark, Integer secondSeminarMark, Integer thirdSeminarMark, Integer totalSeminarsMark /*int attendance*/ ) {
     this.name = name;
     this.id = id;
     this.sureName = sureName;
@@ -95,9 +105,12 @@ public String getFatherName() {return fatherName;}
 
 public void setFatherName(String fatherName) {this.fatherName = fatherName;}
 
-public int getFirstColokMark() {return firstColokMark;}
+public Integer getFirstColokMark() {return firstColokMark;}
 
-public void setFirstColokMark(int firstColokMark) {
+public void setFirstColokMark(Integer firstColokMark) {
+
+    if (firstColokMark == null){this.firstColokMark = 0; return;}
+
     if (firstColokMark >= 0 && firstColokMark <= 10)
     {
     this.firstColokMark = firstColokMark;
@@ -112,9 +125,12 @@ public void setFirstColokMark(int firstColokMark) {
     }
 }
 
-public int getSecondColokMark() {return secondColokMark;}
+public Integer getSecondColokMark() {return secondColokMark;}
 
-public void setSecondColokMark(int secondColokMark) {
+public void setSecondColokMark(Integer secondColokMark) {
+
+     if (secondColokMark == null){this.secondColokMark = 0; return;}
+
     if (secondColokMark >= 0 && secondColokMark <= 10)
     {
 this.secondColokMark = secondColokMark;
@@ -129,9 +145,12 @@ this.secondColokMark = secondColokMark;
     }
 }
 
-public int getThirdColokMark() {return thirdColokMark;}
+public Integer getThirdColokMark() {return thirdColokMark;}
 
-public void setThirdColokMark(int thirdColokMark) {
+public void setThirdColokMark(Integer thirdColokMark) {
+
+     if (thirdColokMark == null){this.thirdColokMark = 0; return;}
+
     if (thirdColokMark >= 0 && thirdColokMark <= 10){
 this.thirdColokMark = thirdColokMark;
     }
@@ -144,9 +163,11 @@ this.thirdColokMark = thirdColokMark;
 }
 
 
-public int getFirstSeminarMark(){ return firstSeminarMark;}
+public Integer getFirstSeminarMark(){ return firstSeminarMark;}
 
-public void setFirstSeminarMark(int firstSeminarMark){
+public void setFirstSeminarMark(Integer firstSeminarMark){
+
+     if (firstSeminarMark == null){this.firstSeminarMark = 0; return;}
     
     if (firstSeminarMark >= 0 && firstSeminarMark <= 10){
         this.firstSeminarMark = firstSeminarMark;
@@ -159,9 +180,12 @@ public void setFirstSeminarMark(int firstSeminarMark){
     }
 }
 
-public int getSecondSeminarMark(){ return secondSeminarMark;}
+public Integer getSecondSeminarMark(){ return secondSeminarMark;}
 
-public void setSecondSeminarMark(int secondSeminarMark){
+public void setSecondSeminarMark(Integer secondSeminarMark){
+
+    if (secondSeminarMark == null){this.secondSeminarMark = 0; return;}
+
     if (secondSeminarMark >= 0 && secondSeminarMark <= 10){
         this.secondSeminarMark = secondSeminarMark;
     }
@@ -172,9 +196,12 @@ public void setSecondSeminarMark(int secondSeminarMark){
         this.secondSeminarMark = 10;
     }
 }
-public int getThirdSeminarMark(){ return thirdSeminarMark;}
+public Integer getThirdSeminarMark(){ return thirdSeminarMark;}
 
-public void setThirdSeminarMark(int thirdSeminarMark){
+public void setThirdSeminarMark(Integer thirdSeminarMark){
+
+    if (thirdSeminarMark == null){this.thirdSeminarMark = 0; return;}
+
     if (thirdSeminarMark >= 0 && thirdSeminarMark <= 10){
         this.thirdSeminarMark = thirdSeminarMark;
     }
@@ -185,13 +212,24 @@ public void setThirdSeminarMark(int thirdSeminarMark){
         this.thirdSeminarMark = 10;
     }
 }
-public int getTotalSeminarsMark(){ return totalSeminarsMark;}
+public Integer getTotalSeminarsMark(){ return totalSeminarsMark;}
 
 
 @PrePersist
 public void setTotalSeminarsMark(){
 
 
-    this.totalSeminarsMark = (this.getFirstColokMark() + this.getSecondColokMark() + this.getThirdColokMark() + this.getFirstSeminarMark() + this.getSecondSeminarMark() + this.getThirdSeminarMark())/6*3;
+   // this.totalSeminarsMark = (this.getFirstColokMark() + this.getSecondColokMark() + this.getThirdColokMark() + this.getFirstSeminarMark() + this.getSecondSeminarMark() + this.getThirdSeminarMark())/6*3;
+
+    this.totalSeminarsMark =
+        ((firstColokMark != null ? firstColokMark : 0) +
+        (secondColokMark != null ? secondColokMark : 0) +
+        (thirdColokMark != null ? thirdColokMark : 0) +
+        (firstSeminarMark != null ? firstSeminarMark : 0) +
+        (secondSeminarMark != null ? secondSeminarMark : 0) +
+        (thirdSeminarMark != null ? thirdSeminarMark : 0))/6*3;
+
+
 }
+
 }

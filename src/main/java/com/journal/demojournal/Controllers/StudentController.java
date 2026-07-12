@@ -1,33 +1,140 @@
 package com.journal.demojournal.Controllers;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.journal.demojournal.Models.Student;
+import com.journal.demojournal.dto.StudentDTO;
 import com.journal.demojournal.services.StudentService;
+import com.journal.demojournal.util.StudentErrorResponse;
+import com.journal.demojournal.util.StudentNotCreatedException;
+import com.journal.demojournal.util.StudentNotFoundException;
 
 import jakarta.validation.Valid;
+
+
 //             .\mvnw.cmd spring-boot:run
-@Controller
+@RestController
 @RequestMapping("/students")
 public class StudentController 
 {
 
+     private final StudentService studentService;
+     private final ModelMapper modelMapper;
 
-    //private final StudentDao studentDao;
 
-    private final StudentService studentService;
+    //рест хрень
 
-     public StudentController(StudentService studentService) {
+
+    @Autowired
+     public StudentController(StudentService studentService, ModelMapper modelMapper) {
         this.studentService = studentService;
+        this.modelMapper = modelMapper;
     }
+
+
+    @GetMapping()
+    public List<StudentDTO> studentsIndex()
+    {
+        return studentService.findAll().stream().map(this::convertToStudentDTO).collect(Collectors.toList());
+    }
+
+    @GetMapping("/{id}")
+    public StudentDTO showStudent(@PathVariable("id") int id)
+    {
+        return convertToStudentDTO(studentService.findOne(id));
+    }
+
+    @PostMapping()
+    public ResponseEntity<HttpStatus> create (@RequestBody @Valid StudentDTO studentDTO, BindingResult bindingResult)
+    {
+        if (bindingResult.hasErrors()){
+            StringBuilder errorMessage = new StringBuilder();
+
+            List<FieldError> errors = bindingResult.getFieldErrors();
+            for (FieldError error : errors){
+                errorMessage.append(error.getField()).append(" - ")
+                .append(error.getDefaultMessage())
+                .append(" ; ");
+            }
+            throw new StudentNotCreatedException(errorMessage.toString());
+        }
+        
+        studentService.save(convertToStudent(studentDTO));
+        return ResponseEntity.ok(HttpStatus.OK);
+    }
+
+
+
+
     
+
+    @ExceptionHandler
+    public ResponseEntity<StudentErrorResponse> handleException(StudentNotFoundException e){
+
+        StudentErrorResponse response =  new StudentErrorResponse("Student not found!", 
+        System.currentTimeMillis());
+
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);//404
+
+     
+
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<StudentErrorResponse> handleException(StudentNotCreatedException e){
+
+        StudentErrorResponse response =  new StudentErrorResponse(e.getMessage(), 
+        System.currentTimeMillis());
+
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);//400
+    }
+
+    private Student convertToStudent (StudentDTO studentDTO){
+        
+
+        Student student = modelMapper.map(studentDTO, Student.class);
+
+/* 
+        Student student = new Student();
+        student.setName(studentDTO.getName());
+        student.setSureName(studentDTO.getSureName());
+        student.setFatherName(studentDTO.getFatherName());
+        student.setFirstColokMark(studentDTO.getFirstColokMark() == null ?  0 : studentDTO.getFirstColokMark()); 
+        student.setSecondColokMark(studentDTO.getSecondColokMark()== null ? 0 : studentDTO.getSecondColokMark());
+        student.setThirdColokMark(studentDTO.getThirdColokMark() == null ? 0 : studentDTO.getThirdColokMark());
+        student.setFirstSeminarMark(studentDTO.getFirstSeminarMark() == null ? 0 : studentDTO.getFirstSeminarMark());
+        student.setSecondSeminarMark(studentDTO.getSecondSeminarMark() == null ? 0 : studentDTO.getSecondSeminarMark());
+        student.setThirdSeminarMark(studentDTO.getThirdSeminarMark() == null ? 0 : studentDTO.getThirdSeminarMark());
+*/
+
+        return student;
+    }
+
+
+    private StudentDTO convertToStudentDTO(Student student){
+
+        return modelMapper.map(student, StudentDTO.class);
+    }
+
+    
+    // mvc хрень
+
+
+   /*  
     @GetMapping()
     public String studentsIndex(Model model) 
     {
@@ -86,5 +193,5 @@ public String delete(@PathVariable("id") int id)
 {
     studentService.delete(id);
     return "redirect:/students";
-}
+}*/
 }

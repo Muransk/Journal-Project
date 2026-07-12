@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.journal.demojournal.Models.Student;
 import com.journal.demojournal.repositories.StudentRepository; 
+import com.journal.demojournal.util.StudentNotFoundException;
 
 @Service
 @Transactional(readOnly = true)
@@ -26,7 +27,8 @@ public class StudentService {
 
     public Student findOne(int id){
         Optional<Student> foundStudent = studentRepository.findById(id); 
-        return foundStudent.orElse(null);
+        
+        return foundStudent.orElseThrow(StudentNotFoundException::new);
     }
     
 
@@ -34,6 +36,8 @@ public class StudentService {
     
     @Transactional
     public void save(Student student){
+         enRichStudent(student);
+
         studentRepository.save(student);
     }
 
@@ -48,4 +52,11 @@ public class StudentService {
     public void delete(int id){
         studentRepository.deleteById(id);
     }
+
+
+    private void enRichStudent(Student student){
+        
+        student.setTotalSeminarsMark();
+    }
+
 }

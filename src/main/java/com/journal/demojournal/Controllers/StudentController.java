@@ -10,6 +10,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -77,7 +78,26 @@ public class StudentController
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
+    // Обновление студена 
 
+    @PatchMapping("/{id}")
+    public ResponseEntity<HttpStatus> edit (@RequestBody @Valid StudentDTO studentDTO, BindingResult bindingResult,  @PathVariable("id") int id)
+    {
+        if (bindingResult.hasErrors()){
+            StringBuilder errorMessage = new StringBuilder();
+
+            List<FieldError> errors = bindingResult.getFieldErrors();
+            for (FieldError error : errors){
+                errorMessage.append(error.getField()).append(" - ")
+                .append(error.getDefaultMessage())
+                .append(" ; ");
+            }
+            throw new StudentNotCreatedException(errorMessage.toString());
+        }
+        
+        studentService.update(id, convertToStudent(studentDTO));
+        return ResponseEntity.ok(HttpStatus.OK);
+    }
 
 
     
@@ -108,18 +128,6 @@ public class StudentController
 
         Student student = modelMapper.map(studentDTO, Student.class);
 
-/* 
-        Student student = new Student();
-        student.setName(studentDTO.getName());
-        student.setSureName(studentDTO.getSureName());
-        student.setFatherName(studentDTO.getFatherName());
-        student.setFirstColokMark(studentDTO.getFirstColokMark() == null ?  0 : studentDTO.getFirstColokMark()); 
-        student.setSecondColokMark(studentDTO.getSecondColokMark()== null ? 0 : studentDTO.getSecondColokMark());
-        student.setThirdColokMark(studentDTO.getThirdColokMark() == null ? 0 : studentDTO.getThirdColokMark());
-        student.setFirstSeminarMark(studentDTO.getFirstSeminarMark() == null ? 0 : studentDTO.getFirstSeminarMark());
-        student.setSecondSeminarMark(studentDTO.getSecondSeminarMark() == null ? 0 : studentDTO.getSecondSeminarMark());
-        student.setThirdSeminarMark(studentDTO.getThirdSeminarMark() == null ? 0 : studentDTO.getThirdSeminarMark());
-*/
 
         return student;
     }

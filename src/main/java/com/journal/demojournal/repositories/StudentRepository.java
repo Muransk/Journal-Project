@@ -9,7 +9,8 @@ import org.springframework.stereotype.Repository;
 import com.journal.demojournal.Models.Student;
 
 
+
 @Repository
 public interface StudentRepository extends JpaRepository<Student, Integer> {
-
+ 
 }

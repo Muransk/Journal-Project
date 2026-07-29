@@ -55,5 +55,5 @@ public class UsersDetails implements UserDetails
     // Чтобы получить данные аутентифицированных пользователей
     public User getUser(){return this.user;}
 
-
+ 
 }

@@ -1,20 +1,48 @@
 package com.journal.demojournal.Controllers;
 
 
+import java.util.List;
+
+import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.journal.demojournal.Models.User;
 import com.journal.demojournal.Security.UsersDetails;
+import com.journal.demojournal.services.UsersService;
+import com.journal.demojournal.util.UserErrorResponse;
+import com.journal.demojournal.util.UserNotCreatedException;
+import com.journal.demojournal.util.UserNotFoundException;
+
+import jakarta.validation.Valid;
+
 
 
 
 @RestController
 @RequestMapping("/api/auth")
 public class UserController {
+
+
+    private final UsersService usersService;
+    private final ModelMapper modelMapper;
+
+    public UserController(UsersService usersService, ModelMapper modelMapper){
+        this.usersService = usersService;
+        this.modelMapper = modelMapper;
+    }
     
 
     @GetMapping("/usersInfo")
@@ -28,5 +56,69 @@ public class UserController {
     public String login() {
         return "Login successful";
     }
+    
+    @PostMapping("/registration")
+
+    public ResponseEntity<HttpStatus> registration(@RequestBody @Valid User user, BindingResult bindingResult){
+        
+
+         if (bindingResult.hasErrors()){
+            StringBuilder errorMessage = new StringBuilder();
+
+            List<FieldError> errors = bindingResult.getFieldErrors();
+            for (FieldError error : errors){
+                errorMessage.append(error.getField()).append(" - ")
+                .append(error.getDefaultMessage())
+                .append(" ; ");
+            }
+            throw new UserNotCreatedException(errorMessage.toString());
+        }
+
+        usersService.save(user);
+        return ResponseEntity.ok(HttpStatus.OK);
+    }
+
+
+     @PatchMapping("/{id}")
+     public ResponseEntity<HttpStatus> updateUserData(@RequestBody @Valid User user, BindingResult bindingResult, @PathVariable("id") int id){
+        
+
+         if (bindingResult.hasErrors()){
+            StringBuilder errorMessage = new StringBuilder();
+
+            List<FieldError> errors = bindingResult.getFieldErrors();
+            for (FieldError error : errors){
+                errorMessage.append(error.getField()).append(" - ")
+                .append(error.getDefaultMessage())
+                .append(" ; ");
+            }
+            throw new UserNotFoundException(errorMessage.toString());
+        }
+
+        usersService.update(id, user);
+        return ResponseEntity.ok(HttpStatus.OK);
+    }
+
+
+
+     @ExceptionHandler
+    public ResponseEntity<UserErrorResponse> handleException(UserNotFoundException e){
+
+        UserErrorResponse response =  new UserErrorResponse("User not found!", 
+        System.currentTimeMillis());
+
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);//404
+
+    }
+
+     @ExceptionHandler
+    public ResponseEntity<UserErrorResponse> handleException(UserNotCreatedException e){
+
+        UserErrorResponse response =  new UserErrorResponse(e.getMessage(), 
+        System.currentTimeMillis());
+
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);//400
+    }
+   
     
 }

@@ -37,7 +37,7 @@ public class SecurityConfig {
                 //.requestMatchers("/api/auth/**").permitAll()
                 .formLogin(form -> form
                     .defaultSuccessUrl("/students", false)
-                    .permitAll()
+                    .permitAll()         
                 );  
 
         return http.build();

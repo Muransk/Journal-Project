@@ -9,8 +9,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -25,9 +27,12 @@ import com.journal.demojournal.Security.UsersDetails;
 import com.journal.demojournal.dto.UserDTO;
 import com.journal.demojournal.services.UsersService;
 import com.journal.demojournal.util.UserErrorResponse;
+import com.journal.demojournal.util.UserNotAuthenticatedException;
 import com.journal.demojournal.util.UserNotCreatedException;
 import com.journal.demojournal.util.UserNotFoundException;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 
 
@@ -113,8 +118,57 @@ public class UserController {
     }
 
 
+     @PostMapping("/logout")
+    public String logout(HttpServletRequest request,
+                                         HttpServletResponse response,
+                                         Authentication authentication) {
 
-     @ExceptionHandler
+        if (authentication == null || !authentication.isAuthenticated()) {
+    throw new UserNotAuthenticatedException("User not authorized");
+}
+        
+
+        new SecurityContextLogoutHandler()
+                .logout(request, response, authentication);
+
+       // return ResponseEntity.ok("You succecfully log out system");
+       return "You succecfully log out system";
+    }
+
+
+    @DeleteMapping("/{id}")
+     public ResponseEntity<HttpStatus> deleteUser(@RequestBody @Valid UserDTO userDTO, BindingResult bindingResult, @PathVariable("id") int id){
+        
+
+         if (bindingResult.hasErrors()){
+            StringBuilder errorMessage = new StringBuilder();
+
+            List<FieldError> errors = bindingResult.getFieldErrors();
+            for (FieldError error : errors){
+                errorMessage.append(error.getField()).append(" - ")
+                .append(error.getDefaultMessage())
+                .append(" ; ");
+            }
+            throw new UserNotFoundException(errorMessage.toString());
+        }
+
+        usersService.delete(id);
+        return ResponseEntity.ok(HttpStatus.OK);
+    }
+
+
+    @ExceptionHandler
+    public ResponseEntity<UserErrorResponse> handleException(UserNotAuthenticatedException e){
+
+          UserErrorResponse response =  new UserErrorResponse(e.getMessage(), 
+        System.currentTimeMillis());
+        
+        
+        
+        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+    }      
+
+    @ExceptionHandler
     public ResponseEntity<UserErrorResponse> handleException(UserNotFoundException e){
 
         UserErrorResponse response =  new UserErrorResponse("User not found!", 

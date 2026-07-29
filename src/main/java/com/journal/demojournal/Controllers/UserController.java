@@ -2,6 +2,7 @@ package com.journal.demojournal.Controllers;
 
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
@@ -21,12 +22,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.journal.demojournal.Models.User;
 import com.journal.demojournal.Security.UsersDetails;
+import com.journal.demojournal.dto.UserDTO;
 import com.journal.demojournal.services.UsersService;
 import com.journal.demojournal.util.UserErrorResponse;
 import com.journal.demojournal.util.UserNotCreatedException;
 import com.journal.demojournal.util.UserNotFoundException;
 
 import jakarta.validation.Valid;
+
 
 
 
@@ -39,6 +42,7 @@ public class UserController {
     private final UsersService usersService;
     private final ModelMapper modelMapper;
 
+
     public UserController(UsersService usersService, ModelMapper modelMapper){
         this.usersService = usersService;
         this.modelMapper = modelMapper;
@@ -46,12 +50,21 @@ public class UserController {
     
 
     @GetMapping("/usersInfo")
-    public String showUserInfo(){
+    public List<UserDTO> showUserInfo(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UsersDetails usersDetails = (UsersDetails)authentication.getPrincipal();
         System.out.println(usersDetails.getUser());
-        return "Hello!";
+        return usersService.findAll().stream().map(this::convertToUserDTO).collect(Collectors.toList());
     }
+
+    @GetMapping("/usersInfo/{id}")
+    public UserDTO showOneUserInfo(@PathVariable("id") int id){
+
+        return  convertToUserDTO(usersService.findOne(id));
+    }
+   
+    
+
     @PostMapping("/login")
     public String login() {
         return "Login successful";
@@ -59,7 +72,7 @@ public class UserController {
     
     @PostMapping("/registration")
 
-    public ResponseEntity<HttpStatus> registration(@RequestBody @Valid User user, BindingResult bindingResult){
+    public ResponseEntity<HttpStatus> registration(@RequestBody @Valid UserDTO userDTO, BindingResult bindingResult){
         
 
          if (bindingResult.hasErrors()){
@@ -74,13 +87,13 @@ public class UserController {
             throw new UserNotCreatedException(errorMessage.toString());
         }
 
-        usersService.save(user);
+        usersService.save(convertToUser(userDTO));
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
 
      @PatchMapping("/{id}")
-     public ResponseEntity<HttpStatus> updateUserData(@RequestBody @Valid User user, BindingResult bindingResult, @PathVariable("id") int id){
+     public ResponseEntity<HttpStatus> updateUserData(@RequestBody @Valid UserDTO userDTO, BindingResult bindingResult, @PathVariable("id") int id){
         
 
          if (bindingResult.hasErrors()){
@@ -95,7 +108,7 @@ public class UserController {
             throw new UserNotFoundException(errorMessage.toString());
         }
 
-        usersService.update(id, user);
+        usersService.update(id, convertToUser(userDTO));
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
@@ -118,6 +131,21 @@ public class UserController {
         System.currentTimeMillis());
 
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);//400
+    }
+
+     private User convertToUser (UserDTO userDTO){
+        
+
+        User user = modelMapper.map(userDTO, User.class);
+
+
+        return user;
+    }
+
+
+    private UserDTO convertToUserDTO(User user){
+
+        return modelMapper.map(user, UserDTO.class);
     }
    
     

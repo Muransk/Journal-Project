@@ -6,5 +6,5 @@ public class UserNotFoundException extends  RuntimeException {
        super(message);
     }
 
-     public UserNotFoundException(){}
+     public UserNotFoundException(){}//чтобы сервис работал!
 }

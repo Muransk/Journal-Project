@@ -1,8 +1,14 @@
 HELP.md
 
-application.properties/
-hibernate.properties/
-templates/
+# Конфигурация
+src/main/resources/application.properties
+src/main/resources/hibernate.properties
+
+# Папка views
+src/main/resources/templates/views/
+
+
+
 target/
 .mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/

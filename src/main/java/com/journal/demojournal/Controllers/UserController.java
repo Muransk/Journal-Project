@@ -117,6 +117,25 @@ public class UserController {
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
+    @PatchMapping("/{id}/password")
+    public ResponseEntity<HttpStatus> updateUserPassword(@RequestBody @Valid UserDTO userDTO, BindingResult bindingResult, @PathVariable("id") int id){
+          if (bindingResult.hasErrors()){
+            StringBuilder errorMessage = new StringBuilder();
+
+            List<FieldError> errors = bindingResult.getFieldErrors();
+            for (FieldError error : errors){
+                errorMessage.append(error.getField()).append(" - ")
+                .append(error.getDefaultMessage())
+                .append(" ; ");
+            }
+            throw new UserNotFoundException(errorMessage.toString());
+            
+        }
+
+            usersService.changePassword(id, userDTO.getPassword());
+             return ResponseEntity.ok(HttpStatus.OK);
+    }
+
 
      @PostMapping("/logout")
     public String logout(HttpServletRequest request,

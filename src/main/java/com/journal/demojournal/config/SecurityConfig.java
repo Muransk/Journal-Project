@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -32,9 +32,10 @@ public class SecurityConfig {
         http
         .csrf(csrf -> csrf.disable()) 
         .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/api/auth/**").permitAll()
                 .anyRequest().authenticated()
         )
-                //.requestMatchers("/api/auth/**").permitAll()
+                
                 .formLogin(form -> form
                     .defaultSuccessUrl("/students", false)
                     .permitAll()         
@@ -43,21 +44,15 @@ public class SecurityConfig {
         return http.build();
     }
 
-   /*  @Bean
-    public DaoAuthenticationProvider authenticationProvider(){// добавлено, хз будет ли работать
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setUserDetailsService(usersDetailsService);
-        provider.setPasswordEncoder(getPasswordEncoder());
-        return provider;
-    }
+
     
    // protected void configurer(AuthenticationManagerBuilder auth){
      //   auth.authenticationProvider(authProvider); 
     //}
-     @Bean
-    public UsersDetailsService usersDetailsService() {
-        return usersDetailsService;
-    }*/
+    // @Bean
+    //public UsersDetailsService usersDetailsService() {
+      //  return usersDetailsService;
+  //  }
 
 
     //@Bean
@@ -68,7 +63,7 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder getPasswordEncoder(){
 
-        return NoOpPasswordEncoder.getInstance();
+        return new BCryptPasswordEncoder();
     }
 }
   
